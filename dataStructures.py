@@ -652,3 +652,172 @@ class BST:
 
     def multipleDelete(self, datas):
         return [self.delete(data) for data in datas]
+
+
+class BinaryTreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+        self.parent = None
+
+    def __str__(self):
+        result = "Head: " + str(self.data)
+        if self.left:
+            result += ". Left: " + str(self.left.data)
+        if self.right:
+            result += ". Right: " + str(self.right.data)
+        if self.parent:
+            result += ". Parent: " + str(self.parent.data)
+        return result
+
+    @property
+    def smallestParent(self):
+        if self.parent:
+            parentData = self.parent.data
+            parentSmallestParent = self.parent.smallestParent
+            if parentSmallestParent:
+                return min(parentSmallestParent, parentData)
+            else:
+                return parentData
+        else:
+            return None
+
+    @property
+    def largestParent(self):
+        if self.parent:
+            parentData = self.parent.data
+            parentLargestParent = self.parent.largestParent
+            if parentLargestParent:
+                return max(parentLargestParent, parentData)
+            else:
+                return parentData
+        return None
+
+    def isBSTFromHere(self, minValueAllowed, maxValueAllowed):
+        if minValueAllowed and maxValueAllowed:
+            if self.data < minValueAllowed or self.data > maxValueAllowed:
+                return False
+            if self.left and self.right:
+                return self.left.isBSTFromHere(minValueAllowed, self.data - 1) and self.right.isBSTFromHere(
+                    self.data + 1, maxValueAllowed)
+            elif self.left:
+                return self.left.isBSTFromHere(minValueAllowed, self.data - 1)
+            elif self.right:
+                return self.right.isBSTFromHere(self.data + 1, maxValueAllowed)
+            else:
+                return True
+        elif minValueAllowed:
+            if self.data < minValueAllowed:
+                return False
+            if self.left and self.right:
+                return self.left.isBSTFromHere(minValueAllowed, self.data - 1) and self.right.isBSTFromHere(
+                    self.data + 1, None)
+            elif self.left:
+                return self.left.isBSTFromHere(minValueAllowed, self.data - 1)
+            elif self.right:
+                return self.right.isBSTFromHere(self.data + 1, None)
+            else:
+                return True
+        elif maxValueAllowed:
+            if self.data > maxValueAllowed:
+                return False
+            if self.left and self.right:
+                return self.left.isBSTFromHere(None, self.data - 1) and self.right.isBSTFromHere(
+                    self.data + 1, maxValueAllowed)
+            elif self.left:
+                return self.left.isBSTFromHere(None, self.data - 1)
+            elif self.right:
+                return self.right.isBSTFromHere(self.data + 1, maxValueAllowed)
+            else:
+                return True
+        else:
+            if self.left and self.right:
+                return self.left.isBSTFromHere(None, self.data - 1) and self.right.isBSTFromHere(
+                    self.data + 1, None)
+            elif self.left:
+                return self.left.isBSTFromHere(None, self.data - 1)
+            elif self.right:
+                return self.right.isBSTFromHere(self.data + 1, None)
+            else:
+                return True
+
+
+class BinaryTree:
+    def __init__(self):
+        self.root = None
+        self.size = 0
+
+    def __str__(self):
+        if self.root:
+            return str(self.root)
+        return ""
+
+    def createRoot(self, data):
+        if self.root:
+            print("Root already exists with data:", self.root.data)
+            return False
+        else:
+            self.root = BinaryTreeNode(data)
+            return True
+
+    def insert(self, data, node, position):
+        if position.lower() != 'l' and position.lower() != 'r':
+            print("Invalid position", position)
+            return False
+        new = BinaryTreeNode(data)
+        self.size += 1
+        new.parent = node
+        if position.lower() == 'l':
+            if node.left:
+                node.left.parent = new
+                new.left = node.left
+            node.left = new
+        else:
+            if node.right:
+                node.right.parent = new
+                new.right = node.right
+            node.right = new
+        return True
+
+    def delete(self, node):
+        if node.left and node.right:
+            print("Cannot delete unambiguously")
+            return False
+        elif node.left:
+            if node.parent:
+                if node.parent.left == node:
+                    node.parent.left = node.left
+                else:
+                    node.parent.right = node.left
+                node.left.parent = node.parent
+            else:
+                self.root = node.left
+                self.root.parent = None
+        elif node.right:
+            if node.parent:
+                if node.parent.left == node:
+                    node.parent.left = node.right
+                else:
+                    node.parent.right = node.right
+                node.right.parent = node.parent
+            else:
+                self.root = node.right
+                self.root.parent = None
+        else:
+            if node.parent:
+                if node.parent.left == node:
+                    node.parent.left = None
+                else:
+                    node.parent.right = None
+            else:
+                self.root = None
+        self.size -= 1
+        return True
+
+    @property
+    def isBST(self):
+        if self.root:
+            return self.root.isBSTFromHere(None, None)
+        else:
+            return True
