@@ -114,12 +114,12 @@ class Stack:
 class SinglyLinkedListNode:
     def __init__(self, data):
         self.data = data
-        self.ref = None
+        self.next = None
 
     def __str__(self):
         result = str(self.data)
-        if self.ref:
-            result += ". Next: " + str(self.ref.data)
+        if self.next:
+            result += ". Next: " + str(self.next.data)
         return result
 
 
@@ -138,20 +138,20 @@ class SinglyLinkedList:
         n = self.start
         while n:
             print(n.data)
-            n = n.ref
+            n = n.next
         return
 
     def insertRelativeToNode(self, data, node):
         new = SinglyLinkedListNode(data)
         self.internalCount += 1
-        new.ref = node.ref
-        node.ref = new
+        new.next = node.next
+        node.next = new
         return
 
     def insertAtStart(self, data):
         new = SinglyLinkedListNode(data)
         self.internalCount += 1
-        new.ref = self.start
+        new.next = self.start
         self.start = new
         return
 
@@ -160,9 +160,9 @@ class SinglyLinkedList:
         self.internalCount += 1
         n = self.start
         if n:
-            while n.ref:
-                n = n.ref
-            n.ref = new
+            while n.next:
+                n = n.next
+            n.next = new
         else:
             self.start = new
         return
@@ -172,7 +172,7 @@ class SinglyLinkedList:
         while n:
             if data == n.data:
                 return True
-            n = n.ref
+            n = n.next
         return False
 
     def insertAfterElement(self, data, element):
@@ -180,7 +180,7 @@ class SinglyLinkedList:
         while n:
             if element == n.data:
                 break
-            n = n.ref
+            n = n.next
         if n:
             self.insertRelativeToNode(data, n)
         else:
@@ -193,11 +193,11 @@ class SinglyLinkedList:
             if element == n.data:
                 self.insertAtStart(data)
                 return
-            while n.ref:
-                if element == n.ref.data:
+            while n.next:
+                if element == n.next.data:
                     break
-                n = n.ref
-            if n.ref:
+                n = n.next
+            if n.next:
                 self.insertRelativeToNode(data, n)
             else:
                 print(element, "not found")
@@ -212,7 +212,7 @@ class SinglyLinkedList:
         i = 1
         n = self.start
         while i < position - 1 and n:
-            n = n.ref
+            n = n.next
             i = i + 1
         if n:
             self.insertRelativeToNode(data, n)
@@ -222,7 +222,7 @@ class SinglyLinkedList:
 
     def deleteAtStart(self):
         if self.start:
-            self.start = self.start.ref
+            self.start = self.start.next
             self.internalCount -= 1
         else:
             print("Empty list")
@@ -232,10 +232,10 @@ class SinglyLinkedList:
         n = self.start
         if n:
             self.internalCount -= 1
-            if n.ref:
-                while n.ref.ref:
-                    n = n.ref
-                n.ref = None
+            if n.next:
+                while n.next.next:
+                    n = n.next
+                n.next = None
             else:
                 self.start = None
         else:
@@ -246,15 +246,15 @@ class SinglyLinkedList:
         n = self.start
         if n:
             if data == n.data:
-                self.start = self.start.ref
+                self.start = self.start.next
                 self.internalCount -= 1
                 return
-            while n.ref:
-                if data == n.ref.data:
+            while n.next:
+                if data == n.next.data:
                     break
-                n = n.ref
-            if n.ref:
-                n.ref = n.ref.ref
+                n = n.next
+            if n.next:
+                n.next = n.next.next
                 self.internalCount -= 1
             else:
                 print(data, "not found")
@@ -271,11 +271,11 @@ class SinglyLinkedList:
                 return
             i = 1
             n = self.start
-            while i < position - 1 and n.ref:
-                n = n.ref
+            while i < position - 1 and n.next:
+                n = n.next
                 i = i + 1
-            if n.ref:
-                n.ref = n.ref.ref
+            if n.next:
+                n.next = n.next.next
                 self.internalCount -= 1
             else:
                 print("List too short")
@@ -288,8 +288,8 @@ class SinglyLinkedList:
         prev = None
         current = self.start
         while current:
-            next = current.ref
-            current.ref = prev
+            next = current.next
+            current.next = prev
             prev = current
             current = next
         self.start = prev
@@ -300,7 +300,7 @@ class SinglyLinkedList:
         n = self.start
         while n:
             total += 1
-            n = n.ref
+            n = n.next
         return total
 
 
